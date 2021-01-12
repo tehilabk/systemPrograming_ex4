@@ -15,21 +15,40 @@ struct node* children[NUM_LETTERS];
 
 node* newNode (char Letter){
 
-node* new_node = (node*) malloc(sizeof(node));
+    node* new_node = (node*) malloc(sizeof(node));
 
-if (new_node != NULL){
-    for (int i = 0; i < NUM_LETTERS; i++)
-    {
-       new_node->children[i]= NULL; 
+    if (new_node != NULL){
+        for (int i = 0; i < NUM_LETTERS; i++)
+        {
+        new_node->children[i]= NULL; 
+        }
+        new_node->count = 0;
+        new_node->letter = Letter;
     }
-    new_node->count = 0;
-    new_node->letter = Letter;
+    else{
+        //TODO free program
+    }
+    return new_node;
 }
-return new_node;
+
+
+char* recivData (){
+    char insert_char;
+    char *arrData = (char*) malloc(sizeof(char));
+    if (arrData == NULL){
+        //TODO free program 
+    }
+    int index = 0;
+    while (insert_char = scanf("%c", stdin) != EOF){
+        *arrData = (char*) realloc(arrData, sizeof(char)+index+1);
+         if (arrData == NULL){
+        //TODO free program 
+        }
+        arrData[index] = insert_char;
+        index++;
+    }
+    return arrData;
 }
-
-
-
 
 
 int charTOindex(char c){
@@ -40,8 +59,7 @@ int charTOindex(char c){
 int main(int argc, char *argcv[])
 {
  
-char c = 'a';
-printf("char is %d", charTOindex(c));
+
 
 return 0;
 }
