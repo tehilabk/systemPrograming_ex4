@@ -30,7 +30,14 @@ return new_node;
 
 
 
-
+char* toLower(char* c, int size){
+for (int i = 0; i < size; i++)
+{
+   if(c[i]>='A' && c[i]<='Z')
+        c[i]=c[i]-'A'+'a';
+}
+return c;    
+}
 
 int charTOindex(char c){
     return c-'a';
