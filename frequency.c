@@ -48,7 +48,10 @@ char* recivData (){
         arrData[index] = insert_char;
         index++;
     }
-    return arrData;
+    *arrData = toLower (*arrData, sizeof(arrData));
+    char *returnData = garbageRemover (*arrData, sizeof(arrData));
+    free(arrData);
+    return returnData;
 }
 
 char* garbageRemover(char* c,int size){
@@ -76,7 +79,6 @@ for (int i = 0; i < size; i++)
 }
 return c;    
 }
->>>>>>> c09be6ec438214f5287d33d6778a587e0bde8fec
 
 int charTOindex(char c){
     return c-'a';
