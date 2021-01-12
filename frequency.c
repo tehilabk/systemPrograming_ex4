@@ -41,15 +41,15 @@ char* recivData (){
     }
     int index = 0;
     while (insert_char = scanf("%c", stdin) != EOF){
-        *arrData = (char*) realloc(arrData, sizeof(char)+index+1);
+        *arrData = (char*) realloc(arrData, sizeof(char)*(index+1));
          if (arrData == NULL){
         //TODO free program 
         }
         arrData[index] = insert_char;
         index++;
     }
-    *arrData = toLower (*arrData, sizeof(arrData));
-    char *returnData = garbageRemover (*arrData, sizeof(arrData));
+    *arrData = toLower (*arrData, strlen(arrData));
+    char *returnData = garbageRemover (*arrData, strlen(arrData));
     free(arrData);
     return returnData;
 }
