@@ -57,6 +57,7 @@ char* recivData (){
 
 void splitWordes(){
 
+    node *root = (node*) malloc(sizeof(node));
     char *data = recivData();
     int length = strlen(data);
     char *word = (char*) malloc(sizeof(char));
@@ -70,7 +71,7 @@ void splitWordes(){
         }
         else{
             word[index] = '\0';
-            //TODO sent to insert tree
+            insertWordToTree(root, word);
             free(word);
             index = 0;
         }
@@ -79,7 +80,9 @@ void splitWordes(){
 }
 
 
-
+void insertWordToTree (node *root ,char *word){
+    
+}
 
 char* garbageRemover(char* c,int size){
     char* string = (char*)malloc(sizeof(char)*(size+1));
