@@ -48,11 +48,38 @@ char* recivData (){
         arrData[index] = insert_char;
         index++;
     }
-    *arrData = toLower (*arrData, strlen(arrData));
-    char *returnData = garbageRemover (*arrData, strlen(arrData));
+    *arrData = toLower(*arrData, strlen(arrData));
+    char *returnData = garbageRemover(*arrData, strlen(arrData));
     free(arrData);
     return returnData;
 }
+
+
+void splitWordes(){
+
+    char *data = recivData();
+    int length = strlen(data);
+    char *word = (char*) malloc(sizeof(char));
+    int index = 0;
+    for (int i=0; i<length; i++){
+         if (data[i]!=' ' && data[i]!='\n' && data[i]!='\t' && data[i]!='\r' && data[i]!='\0')
+        {
+            *word = (char*) realloc(word, sizeof(char)*(index+1));
+            word[index] = data[i];
+            index++;
+        }
+        else{
+            word[index] = '\0';
+            //TODO sent to insert tree
+            free(word);
+            index = 0;
+        }
+    }           
+
+}
+
+
+
 
 char* garbageRemover(char* c,int size){
     char* string = (char*)malloc(sizeof(char)*(size+1));
@@ -70,6 +97,8 @@ char* garbageRemover(char* c,int size){
     string=(char)realloc(string,sizeof(char)*(j+1));
     return string;
 }
+
+
 
 char* toLower(char* c, int size){
 for (int i = 0; i < size; i++)
