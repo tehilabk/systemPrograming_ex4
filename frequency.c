@@ -19,13 +19,16 @@ struct node* children[NUM_LETTERS];
 
 
 
-
+int charTOindex(char c){
+    return c-'a';
+}
 
 
 int main(int argc, char *argcv[])
 {
  
-
+char c = 'a';
+printf("char is %d", charTOindex(c));
 
 return 0;
 }
