@@ -89,7 +89,7 @@ char* garbageRemover(char* c,int size){
     for (i = 0; i < size; i++)
     {
         if ((c[i]>='a' && c[i]<='z') || c[i]==' ' || c[i]=='\n' || c[i]=='\t' || c[i]=='\r' ||c[i]=='\0')
-        {//*word = (char*) realloc(word, sizeof(char)*(index+1));
+        {
             *string = (char*) realloc(string, sizeof(char)*(j+2));
             string[j]=c[i];
             j++;
