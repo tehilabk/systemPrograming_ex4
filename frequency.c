@@ -120,12 +120,14 @@ void splitWordes(){
             free(word);
             index = 0;
         }
-    }           
+    }
+
+    free(root);           
 
 }
 
 
-void insertWordToTree (node *root ,char *word){
+void insertWord (node *root ,char *word){
     int c;
     node *insert = NULL;
     for (c = 0; c < strlen(word)-1; c++)
@@ -148,6 +150,7 @@ void insertWordToTree (node *root ,char *word){
             //TODO free program 
              } 
         }
+
 }
 
 
