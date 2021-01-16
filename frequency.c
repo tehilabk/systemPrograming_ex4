@@ -1,20 +1,12 @@
-  
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "frequency.h"
 
-typedef enum {FALSE=0, TRUE=1} boolean;
-
-
-//TODO check if maloc and realoc need size+1 for /0
-
-
 node* newNode (char Letter){
     node* new_node = (node*) calloc(1,sizeof(node));
     if (!new_node){
-       //TODO check if need to send root, error num 1
-      return new_node;
+      return new_node; // error num 1
     }
     for (int i = 0; i < NUM_LETTERS; i++)
     {
@@ -80,9 +72,8 @@ char* recivData (){
         arrData[index] = insert_char;
         index++;
     }
-    int sArrData = strlen(arrData);
-    arrData = toLower(arrData, sArrData);
-    char *returnData = garbageRemover(arrData, sArrData);
+    arrData = toLower(arrData, index);
+    char *returnData = garbageRemover(arrData, index);
     free(arrData);
     return returnData;
 }
@@ -93,7 +84,6 @@ node* splitWordes(char *data){
     if (root == NULL){
         exit(5);//no tree to delete, error num 5
     }
-    
     char *word = (char*) calloc(1,sizeof(char));
     if(word == NULL){
         free(data);
@@ -123,11 +113,10 @@ node* splitWordes(char *data){
                 } 
             word[index] = '\0';
             insertWord(root, word, index);
-            //free(word);
             index = 0;
       }
     }
-
+    free(word);
    return root;         
 
 }
@@ -141,28 +130,28 @@ void insertWord (node *root ,char *wordf, int wordLenght){
         int index = charTOindex(letter);
         if(root->children[index]==NULL){
             root->children[index] = newNode(letter);
+            if(root->children[index] == NULL)
+                freeTree(root);
         }
         root = root->children[index];
         if(c==wordLenght-2){
-            char* temp = calloc(1,strlen(wordf));
+            char* temp = calloc(2,strlen(wordf));
             if(temp == NULL){
                 freeTree(root); //error num 11
                 exit(11);
                 } 
-            strcpy(temp,wordf);
+            strncpy(temp,wordf,wordLenght);
             root->word = temp;
             root->count++;
         }
     }
-    
 }
 
 void freeTree(node *r){
-    if (r==NULL)
-        return;
-    for (int i =NUM_LETTERS ; i > 0; i--) {
+    for (int i =NUM_LETTERS-1 ; i >= 0; i--) {
         if (r->children[i] != NULL) {
             freeTree(r->children[i]);
+            free(r->word);
         }
     }
     free(r); //frees the root
@@ -175,32 +164,46 @@ void lexicographical_order(node* root){
     for(int i = 0; i <NUM_LETTERS ; i++)
     {
         if(root->count != 0 ){
-            printf("%s %ld\n" ,root->word,root->count);
+            printf("%s %d\n" ,root->word,root->count);
             root->count=0;
         }
         if(root->children[i]!=NULL){
             lexicographical_order(root->children[i]);
         }
     }
-    
 }
 
+void lexicographical_order_reverse(node* root){
+
+    for(int i = NUM_LETTERS-1; i >= 0 ; i--)
+    {
+        if(root->children[i]!=NULL){
+            lexicographical_order_reverse(root->children[i]);
+        }
+        if(root->count != 0 ){
+            char* word = root->word;
+            int count = root->count;
+            printf("%s %d\n" , word , count);
+            root->count=0;
+        }
+        
+    }
+}
 
 
 int main(int argc, char const *argv[])
 {
     char *data = recivData();
-
     node *root = splitWordes(data);
-
-    lexicographical_order(root);
+    free(data);
+    lexicographical_order_reverse(root);
     // if(argc==1) 
     //  ;   
     // //TODO print exicograph a-z
 	// else if(argc==2 && *argcv[1]=='r') 
     // //TODO print exicograph z-a
 
-    //freeTree(root);
+    freeTree(root);
    
 return 0;
 }

@@ -5,7 +5,7 @@
 
 typedef struct node {
 char letter;
-long unsigned int count;
+int count;
 struct node* children[NUM_LETTERS];
 char* word;
 } node;
@@ -18,7 +18,7 @@ char* recivData ();
 node* splitWordes(char *data);
 void insertWord (node *root ,char *word, int wordLength);
 void freeTree(node *r);
-
+void lexicographical_order_reverse(node* root);
 void lexicographical_order(node* root);
 
 #endif //FREQUANCT_H
