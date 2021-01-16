@@ -11,11 +11,10 @@ typedef enum {FALSE=0, TRUE=1} boolean;
 
 
 node* newNode (char Letter){
-
     node* new_node = (node*) calloc(1,sizeof(node));
-
-    if (new_node == NULL){
-      freeTree(new_node,1); //TODO check if need to send root, error num 1
+    if (!new_node){
+      freeTree(new_node); //TODO check if need to send root, error num 1
+      exit(1);
     }
     for (int i = 0; i < NUM_LETTERS; i++)
     {
@@ -23,7 +22,6 @@ node* newNode (char Letter){
     }
     new_node->count = 0;
     new_node->letter = Letter;
-
     return new_node;
 }
 
@@ -40,14 +38,18 @@ return c;
 
 char* garbageRemover(char* c,int size){
     char *string = (char*)calloc(1,sizeof(char));
-    if(string == NULL)
+    if(string == NULL){
        exit(2);//no tree to delete, error num 2
+    }  
     int i,j=0;
     for (i = 0; i < size; i++)
     {
         if ((*(c+i)>='a' && *(c+i)<='z') || *(c+i)==' ' || *(c+i)=='\n' || *(c+i)=='\t' || *(c+i)=='\r' ||*(c+i)=='\0')
         {
             string = (char*) realloc(string, sizeof(char)*(j+2));
+            if(string == NULL){
+                exit(2);//no tree to delete, error num 2
+            }
             *(string+j)=*(c+i);
             j++;
         }
@@ -65,54 +67,61 @@ int charTOindex(char c){
 
 char* recivData (){
     char insert_char;
-    char *arrData = (char*) calloc(1,sizeof(char));
+    char *arrData = (char*) calloc(1,sizeof(char)*2);
     if (arrData == NULL){
         exit(3);//no tree to delete, error num 3
     }
     int index = 0;
     while ((insert_char = fgetc(stdin))!= EOF){
-        arrData = (char*) realloc(arrData, sizeof(char)*(index+1));
+        arrData = (char*) realloc(arrData, sizeof(char)*(index+2));
          if (arrData == NULL){
-        exit(4);//no tree to delete, error num 4
+            exit(4);//no tree to delete, error num 4
         }
         arrData[index] = insert_char;
         index++;
     }
-    arrData = toLower(arrData, strlen(arrData));
-    char *returnData = garbageRemover(arrData, strlen(arrData));
+    int sArrData = strlen(arrData);
+    arrData = toLower(arrData, sArrData);
+    char *returnData = garbageRemover(arrData, sArrData);
     free(arrData);
     return returnData;
 }
 
 
 node* splitWordes(){
-
-
     node *root = (node*) calloc(1,sizeof(node));
     if (root == NULL){
-     exit(5);//no tree to delete, error num 5
+        exit(5);//no tree to delete, error num 5
     }
     char *data = recivData();
     char *word = (char*) calloc(1,sizeof(char));
     if(word == NULL){
-        freeTree(root, 6); //error num 6 
+        free(data);
+        freeTree(root); //error num 6 
         exit(6);
     } 
     int index = 0;
     for (int i=0; data[i]; i++){
          if (data[i]!=' ' && data[i]!='\n' && data[i]!='\t' && data[i]!='\r' && data[i]!='\0')
         {
-            word = (char*) realloc(word, sizeof(char)*(index+1));
+            word = (char*) realloc(word, sizeof(char)*(index+2));
              if(word == NULL){
-                freeTree(root, 7); //error num 7 
+                free(data);
+                freeTree(root); //error num 7 
                 exit(7);
              } 
             word[index] = data[i];
             index++;
         }
         else{
+            word = (char*) realloc(word, sizeof(char)*(index+2));
+            if(word == NULL){
+                free(data);
+                freeTree(root); //error num 10
+                exit(10);
+                } 
             word[index] = '\0';
-            insertWord(root, word);
+            insertWord(root, word, index);
             free(word);
             index = 0;
         }
@@ -123,60 +132,53 @@ node* splitWordes(){
 }
 
 
-void insertWord (node *root ,char *word){
+void insertWord (node *root ,char *word, int wordLenght){
     int c;
     node *insert = NULL;
-    for (c = 0; c < word[c]; c++)
+    for (c = 0; c < wordLenght-2; c++)
     {
-        int index = charTOindex(c);
+        int index = charTOindex(*(word+c));
         if (root->children[index] == NULL){
-            insert = newNode(c);
+            insert = newNode(*(word + c));
              if(insert == NULL){
-                freeTree(root, 8); //error num 8
+                free(word);
+                freeTree(root); //error num 8
                 exit(8); 
              } 
         }
+        root->children[index] = insert;
         root = insert;
     }
-
-    //end of word- counter++
-    c = strlen(word)-1;
-    int index = charTOindex(c);
-    if (root->children[index] == NULL){
-            insert = newNode(c);
-            insert->count++;
+    int index = charTOindex(*(word+wordLenght-1));              /////TODO if /0 or not
+     if (root->children[index] == NULL){
+            insert = newNode(*(word + c));
              if(insert == NULL){
-                freeTree(root, 9); //error num 9
-                exit(9); 
+                free(word);
+                freeTree(root); //error num 8
+                exit(8); 
              } 
         }
-
+        root->children[index] = insert;
+        insert->count++;
 }
 
-// void freeTree(node *r, int error){
-//     for (int i = 0; i < NUM_LETTERS; i++) {
-//         if (r->children[i]) {
-//             freeTree(r->children[i], 0);
-//         }
-//     }
-//     free(r); //frees the root
-//     if (error != 0){
-//         printf("error num %d",error);
-//     }
-// }
-
-void freeTree(node* pointer, int err){
-	int i;
-    for(i=NUM_LETTERS-1;i>=0;i--){
-        if(pointer->children[i]!=NULL)
-            freeTree(pointer->children[i],0);
+void freeTree(node *r){
+    if (r==NULL)
+        return;
+    for (int i = 0; i < NUM_LETTERS; i++) {
+        if (r->children[i] != NULL) {
+            freeTree(r->children[i]);
+        }
     }
-    free(pointer);
+    free(r); //frees the root
+
 }
+
+
 
 int main(int argc, char *argcv[])
 {
- 
+    printf("hello");
     node *root = splitWordes();
     // if(argc==1) 
     //  ;   
@@ -184,7 +186,7 @@ int main(int argc, char *argcv[])
 	// else if(argc==2 && *argcv[1]=='r') 
     // //TODO print exicograph z-a
 
-    freeTree(root,0);
+    freeTree(root);
    
 return 0;
 }

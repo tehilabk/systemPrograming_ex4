@@ -15,7 +15,7 @@ char* garbageRemover(char* c,int size);
 int charTOindex(char c);
 char* recivData ();
 node* splitWordes();
-void insertWord (node *root ,char *word);
-void freeTree(node *r, int error);
+void insertWord (node *root ,char *word, int wordLength);
+void freeTree(node *r);
 
 #endif //FREQUANCT_H
