@@ -144,7 +144,13 @@ void insertWord (node *root ,char *wordf, int wordLenght){
         }
         root = root->children[index];
         if(c==wordLenght-2){
-            root->word = wordf;
+            char* temp = calloc(1,strlen(wordf));
+            if(temp == NULL){
+                freeTree(root); //error num 11
+                exit(11);
+                } 
+            strcpy(temp,wordf);
+            root->word = temp;
             root->count++;
         }
     }
@@ -169,7 +175,8 @@ void lexicographical_order(node* root){
     for(int i = 0; i <NUM_LETTERS ; i++)
     {
         if(root->count != 0 ){
-            printf("%s %d\n" ,root->word,root->count);
+            printf("%s %ld\n" ,root->word,root->count);
+            root->count=0;
         }
         if(root->children[i]!=NULL){
             lexicographical_order(root->children[i]);
