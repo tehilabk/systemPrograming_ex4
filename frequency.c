@@ -4,17 +4,18 @@
 #include "frequency.h"
 
 node* newNode (char Letter){
-    node* new_node = (node*) calloc(1,sizeof(node));
+    node* new_node = (node*) calloc(2,sizeof(node));
     if (!new_node){
       return new_node; // error num 1
     }
     for (int i = 0; i < NUM_LETTERS; i++)
     {
         new_node->children[i]= NULL; 
-    }
+    }  
     new_node->count = 0;
     new_node->letter = Letter;
     new_node->word = (char*) calloc(2,sizeof(char));
+    new_node->word[0] = '\n';
 ;
     return new_node;
 }
@@ -138,12 +139,12 @@ void insertWord (node *root ,char *wordf, int wordLenght){
         }
         root = root->children[index];
         if(c==wordLenght-2){
-            root->word = (char*) realloc(root->word, sizeof(char)*wordLenght+1);
+            root->word = (char*) realloc(root->word, wordLenght+3);
             if(root->word == NULL){
                 freeTree(root); //error num 11
                 exit(11);
                 } 
-            strncpy(root->word,wordf,wordLenght);
+            strcpy(root->word, wordf);
             root->count++;
         }
     }
@@ -201,13 +202,14 @@ int main(int argc, char const *argv[])
     char *data = recivData();
     node *root = splitWordes(data);
     free(data);
+    
+    if(argc==1){
     lexicographical_order(root);
-    // if(argc==1) 
-    //  ;   
-    // //TODO print exicograph a-z
-	// else if(argc==2 && *argcv[1]=='r') 
-    // //TODO print exicograph z-a
+    }
 
+	else if(argc==2 && *argv[1]=='r'){ 
+        lexicographical_order_reverse(root);
+    }
      freeTree(root);
 return 0;
 }
