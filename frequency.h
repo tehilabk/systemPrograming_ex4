@@ -9,7 +9,7 @@ int count;
 struct node* children[NUM_LETTERS];
 char* word;
 } node;
-
+   
 node* newNode (char Letter);
 char* toLower(char *c, int size);
 char* garbageRemover(char* c,int size);
