@@ -14,7 +14,8 @@ node* newNode (char Letter){
     }
     new_node->count = 0;
     new_node->letter = Letter;
-    new_node->word = NULL;
+    new_node->word = (char*) calloc(2,sizeof(char));
+;
     return new_node;
 }
 
@@ -114,9 +115,11 @@ node* splitWordes(char *data){
             word[index] = '\0';
             insertWord(root, word, index);
             index = 0;
+             
       }
     }
     free(word);
+    
    return root;         
 
 }
@@ -135,26 +138,28 @@ void insertWord (node *root ,char *wordf, int wordLenght){
         }
         root = root->children[index];
         if(c==wordLenght-2){
-            char* temp = calloc(2,strlen(wordf));
-            if(temp == NULL){
+            root->word = (char*) realloc(root->word, sizeof(char)*wordLenght+1);
+            if(root->word == NULL){
                 freeTree(root); //error num 11
                 exit(11);
                 } 
-            strncpy(temp,wordf,wordLenght);
-            root->word = temp;
+            strncpy(root->word,wordf,wordLenght);
             root->count++;
         }
     }
 }
 
 void freeTree(node *r){
+
     for (int i =NUM_LETTERS-1 ; i >= 0; i--) {
         if (r->children[i] != NULL) {
             freeTree(r->children[i]);
-            free(r->word);
-        }
+        } 
     }
-    free(r); //frees the root
+    
+    //frees the root
+    free(r->word);
+     free(r); 
 
 }
 
@@ -165,7 +170,7 @@ void lexicographical_order(node* root){
     {
         if(root->count != 0 ){
             printf("%s %d\n" ,root->word,root->count);
-            root->count=0;
+            root->count=0;            
         }
         if(root->children[i]!=NULL){
             lexicographical_order(root->children[i]);
@@ -196,15 +201,14 @@ int main(int argc, char const *argv[])
     char *data = recivData();
     node *root = splitWordes(data);
     free(data);
-    lexicographical_order_reverse(root);
+    lexicographical_order(root);
     // if(argc==1) 
     //  ;   
     // //TODO print exicograph a-z
 	// else if(argc==2 && *argcv[1]=='r') 
     // //TODO print exicograph z-a
 
-    freeTree(root);
-   
+     freeTree(root);
 return 0;
 }
 
