@@ -4,7 +4,7 @@ FLAGS = -Wall -g
 
 .PHONY: all clean 
 
-all: frequency
+all: frequency  
 
 frequency.o:frequency.c frequency.h
 	$(CC) $(FLAGS) -c frequency.c 

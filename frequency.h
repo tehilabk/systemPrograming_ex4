@@ -8,7 +8,7 @@ char letter;
 int count;
 struct node* children[NUM_LETTERS];
 char* word;
-} node;
+} node;  
    
 node* newNode (char Letter);
 char* toLower(char *c, int size);
