@@ -15,8 +15,7 @@ node* newNode (char Letter){
     new_node->count = 0;
     new_node->letter = Letter;
     new_node->word = (char*) calloc(2,sizeof(char));
-    new_node->word[0] = '\n';
-;
+   
     return new_node;
 }
 
@@ -117,7 +116,7 @@ node* splitWordes(char *data){
             insertWord(root, word, index);
             index = 0;
              
-      }
+      }   
     }
     free(word);
     
